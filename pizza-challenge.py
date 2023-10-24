@@ -1,9 +1,32 @@
 from cat.mad_hatter.decorators import tool, hook
+import json
 
-# @tool()
-# def order_pizza(tool_input, cat):
-#    """You can use this tool when you need to place an order for a pizza"""
-#    return tool_input
+@hook()
+def before_cat_sends_message(message, cat):
+   try:
+      content = json.loads(message["content"])
+      if content["flow"] == "order_confirmed":
+         print(f"╔═════════════════════════════════════════╗")
+         print(f"║     PIZZA CHALLENGE  ORDER CONFIRMED    ║")
+         print(f"╠═════════════════════════════════════════╣")
+         print(f'║ {content["name"].ljust(40)}║')
+         print(f'║ {content["address"].ljust(40)}║')
+         for pizza in content["order"]:
+            pizza_info=f"{pizza['quantity']} x {pizza['type']}"
+            print(f'║ {pizza_info.ljust(40)}║')
+            for key in pizza.keys():
+               if key != "quantity" and key != "type":
+                  note=f"     {key}: {pizza[key]}"
+                  print(f"║ {note.ljust(40)}║")
+         print(f"╚═════════════════════════════════════════╝")
+
+      cat.working_memory.episodic_memory.clear()
+      cat.working_memory.history.clear()
+
+   except:
+      pass
+
+   return message
 
 @hook(priority=0)
 def agent_prompt_prefix(prefix, cat):
@@ -14,12 +37,11 @@ Here's how the pizza ordering process exactly works:
    2. Gathering Information:
       - I will ask for the following information.
       - Type of pizza.
-      - Quantity (up to 10 pizzas, but I will confirm if it's more than 4).
       - Name for the order.
       - Delivery address.
    3. Validating Information:
       - I will validate the provided information.
-      - Check the quantity (confirm if it's more than 4).
+      - Check the quantity.
       - Verify that the delivery address is a valid Italian address.
    4. Order Confirmation:
       - I will ask for confirmation from the user before placing the order.
@@ -45,11 +67,10 @@ This is an example of a valid conversation:
    Human: cornizzolo 55 eupilio
    Bot: Ok, I have the following order: two margherita and one napoli for John, to be delivered at cornizzolo 55 eupilio. Is this correct?
    Human: yes
-   Bot: {{"name": "John", "address": "cornizzolo 55 eupilio", "order": [{{"type": "margherita", "quantity": 2 }}, {{"type": "napoli", "quantity": 1}}]}}  
+   Bot: {{"flow":"order_confirmed", "name": "John", "address": "cornizzolo 55 eupilio", "order": [{{"type": "margherita", "quantity": 2 }}, {{"type": "napoli", "quantity": 1}}]}}  
 
 Now you are a pizza's assistance that respect exactly the ordering process.
 You will start the chat by asking me to order a pizza.
-You can talk only about ordering a pizza.
    """
 
    return prefix
