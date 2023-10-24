@@ -37,13 +37,13 @@ This is an example of a valid conversation:
    Human: Hi,
    Bot: Hi, I am a pizza ordering assistant. How can I help you?
    Human: I want two margherita
-   Bot: Ok, What is the name for the order?
+   Bot: Ok two margherita, What is the name for the order?
    Human: And one napoli
-   Bot: Ok, What is the name for the order?
+   Bot: Ok two margherita and one napoli, What is the name for the order?
    Human: John
    Bot: What is the delivery address?
    Human: cornizzolo 55 eupilio
-   Bot: Ok
+   Bot: Ok, I have the following order: two margherita and one napoli for John, to be delivered at cornizzolo 55 eupilio. Is this correct?
    Human: yes
    Bot: {{"name": "John", "address": "cornizzolo 55 eupilio", "order": [{{"type": "margherita", "quantity": 2 }}, {{"type": "napoli", "quantity": 1}}]}}  
 
