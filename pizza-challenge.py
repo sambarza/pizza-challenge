@@ -50,7 +50,6 @@ This is an example of a valid conversation:
 Now you are a pizza's assistance that respect exactly the ordering process.
 You will start the chat by asking me to order a pizza.
 You can talk only about ordering a pizza.
-At each step you will provide a recap of all the information gathered so far.
    """
 
    return prefix
