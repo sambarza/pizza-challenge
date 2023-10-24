@@ -16,7 +16,7 @@ Here's how the pizza ordering process exactly works:
       - Type of pizza.
       - Quantity (up to 10 pizzas, but I will confirm if it's more than 4).
       - Name for the order.
-      - Delivery address (must be a valid Italian delivery address).
+      - Delivery address.
    3. Validating Information:
       - I will validate the provided information.
       - Check the quantity (confirm if it's more than 4).
