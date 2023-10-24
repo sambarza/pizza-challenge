@@ -1,4 +1,5 @@
 from cat.mad_hatter.decorators import tool, hook
+from cat.looking_glass.cheshire_cat import CheshireCat
 import json
 
 @hook()
@@ -6,8 +7,16 @@ def before_cat_sends_message(message, cat):
    try:
       content = json.loads(message["content"])
       if content["flow"] == "order_confirmed":
+
+         scherzo, reason = is_scherzo(cat, content)
+
          print(f"╔═════════════════════════════════════════╗")
          print(f"║     PIZZA CHALLENGE  ORDER CONFIRMED    ║")
+         print(f"╠═════════════════════════════════════════╣")
+
+         print(f'║ SCHERZO: {scherzo.ljust(31)}║')
+         print(f'║ MOTIVO: {reason.ljust(32)}║')
+
          print(f"╠═════════════════════════════════════════╣")
          print(f'║ {content["name"].ljust(40)}║')
          print(f'║ {content["address"].ljust(40)}║')
@@ -20,14 +29,41 @@ def before_cat_sends_message(message, cat):
                   print(f"║ {note.ljust(40)}║")
          print(f"╚═════════════════════════════════════════╝")
 
-      cat.working_memory.episodic_memory.clear()
-      cat.working_memory.history.clear()
+         new_order(cat)
 
    except:
       pass
 
    return message
 
+def new_order(cat: CheshireCat):
+   cat.working_memory.episodic_memory.clear()
+   cat.working_memory.history.clear()
+   
+def is_scherzo(cat: CheshireCat, content):
+
+   pizze = ""
+
+   for pizza in content["order"]:
+         pizze += f"{pizza['quantity']} {pizza['type']}\n"
+
+   PROMPT = f"""
+una persona telefona ad una pizzeria e ordina:
+{pizze} 
+a nome {content["name"]} 
+consegna in {content["address"]}
+ti sembra uno scherzo?
+
+rispondi sulla prima riga solo con: SI/NO/PROBABILE
+sulla seconda riga con la motivazione della tua scelta
+"""
+
+   print(PROMPT)
+   risposta = cat.llm(PROMPT)
+   print(f"Risposta: {risposta}")
+
+   return risposta.split("\n")
+            
 @hook(priority=0)
 def agent_prompt_prefix(prefix, cat):
    prefix = """
