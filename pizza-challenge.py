@@ -105,12 +105,15 @@ def is_joke(cat: CheshireCat, content):
    PROMPT = f"""
 una persona telefona ad una pizzeria e ordina:
 {pizze} 
-a nome {content["name"]} 
-consegna in {content["address"]}
-ti sembra uno scherzo?
+lascia il nome "{content["name"]}"
+indirizzo di consegna "{content["address"]}"
 
-rispondi sulla prima riga solo con: SI/NO/PROBABILE
-sulla seconda riga con la motivazione della tua scelta
+rispondi con solo due righe, sulla prima riga metti solo la percentuale di probabilità che sia uno scherzo telefonico,
+sulla seconda riga motivo la tua scelta
+
+esempio di risposta:
+80%
+linguaggio inappropriato
 """
 
    print(PROMPT)
