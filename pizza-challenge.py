@@ -60,6 +60,7 @@ def place_order(order, message, cat: CheshireCat):
       print(f"╠═════════════════════════════════════════╣")
       print(f'║ {order["name"].ljust(40)}║')
       print(f'║ {order["address"].ljust(40)}║')
+      print(f'║ {order["phone"].ljust(40)}║')
 
       # For each pizza type in the order      
       for pizza in order["order"]:
@@ -134,6 +135,7 @@ Here's how the pizza ordering process exactly works:
       - Type of pizza.
       - Name for the order.
       - Delivery address.
+      - Phone number.
    3. Order Confirmation:
       - I will ask for confirmation from the user before placing the order.
    4. Placing the Order:
@@ -142,7 +144,7 @@ Here's how the pizza ordering process exactly works:
 
         Here is the output schema:
         ```
-        {{"properties": {{"name": {{"title": "Name", "description": "name of the order", "type": "string"}}, "address": {{"title": "Address", "description": "address of the order", "type": "string"}}, "order": {{"title": "Order", "description": "list of pizza ordered", "type": "array", "items": {{"$ref": "#/definitions/OrderPizza"}}}}}}, "required": ["name", "address", "order"], "definitions": {{"OrderPizza": {{"title": "OrderPizza", "type": "object", "properties": {{"type": {{"title": "Type", "description": "type of pizza", "type": "string"}}, "quantity": {{"title": "Quantity", "description": "quantity of pizza", "type": "integer"}}}}, "required": ["type", "quantity"]}}}}}}
+        {{"properties": {{"name": {{"title": "Name", "description": "name of the order", "type": "string"}}, "address": {{"title": "Address", "description": "address of the order", "type": "string"}}, "phone": {{"title": "Phone", "description": "phone number", "type": "string"}}, "order": {{"title": "Order", "description": "list of pizza ordered", "type": "array", "items": {{"$ref": "#/definitions/OrderPizza"}}}}}}, "required": ["name", "address", "order"], "definitions": {{"OrderPizza": {{"title": "OrderPizza", "type": "object", "properties": {{"type": {{"title": "Type", "description": "type of pizza", "type": "string"}}, "quantity": {{"title": "Quantity", "description": "quantity of pizza", "type": "integer"}}}}, "required": ["type", "quantity"]}}}}}}
 
 This is an example of a valid conversation:
    Human: Hi,
@@ -154,9 +156,11 @@ This is an example of a valid conversation:
    Human: Joe & Mac
    Bot: What is the delivery address?
    Human: cornizzolo 55 eupilio
-   Bot: Ok, I have the following order: two margherita and one napoli, name for the delivery is "Joe & Mac", to be delivered at cornizzolo 55 eupilio. Is this correct?
+   Bot: Can you give me a phone number?
+   Human: 3456789012
+   Bot: Ok, I have the following order: two margherita and one napoli, name for the delivery is "Joe & Mac", phone number 3456789012, to be delivered at cornizzolo 55 eupilio. Is this correct?
    Human: yes
-   Bot: {{"flow":"order_confirmed", "name": "John", "address": "cornizzolo 55 eupilio", "order": [{{"type": "margherita", "quantity": 2 }}, {{"type": "napoli", "quantity": 1}}]}}  
+   Bot: {{"flow":"order_confirmed", "name": "John", "address": "cornizzolo 55 eupilio", "phone": "3456789012", "order": [{{"type": "margherita", "quantity": 2 }}, {{"type": "napoli", "quantity": 1}}]}}  
 
 Now you are a pizza's assistance that respect exactly the ordering process.
 You will start the chat by asking me to order a pizza.
