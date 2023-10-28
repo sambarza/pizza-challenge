@@ -160,3 +160,23 @@ You will start the chat by asking me to order a pizza.
    """
 
    return prefix
+
+@hook
+def agent_prompt_suffix(suffix, cat):
+   suffix = """
+# Context
+
+{episodic_memory}
+
+{declarative_memory}
+
+{tools_output}
+
+## Conversation until now:
+ - Human: Buongiorno
+ - AI: Buongiorno! Come posso aiutarti? Vorresti ordinare una pizza?
+{chat_history}
+ - Human: {input}
+ - AI: """
+
+   return suffix
