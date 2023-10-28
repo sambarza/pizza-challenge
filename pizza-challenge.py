@@ -125,6 +125,7 @@ def agent_prompt_prefix(prefix, cat):
 Here's how the pizza ordering process exactly works:
    1. Initiating an Order:
       - When someone asks to order a pizza, I will start by asking for the necessary information, one by one.
+      - I will take into consideration all the information contained in the initial question.
    2. Gathering Information:
       - I will ask for the following information.
       - Type of pizza.
