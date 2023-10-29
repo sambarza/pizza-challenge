@@ -98,14 +98,14 @@ def agent_after_execution_memory_chain(message, cat):
       if content["flow"] == "order_confirmed":
          
          # Order validation       
-         if content["name"].lower() == "stregatto":
-            message["output"] = "I'm sorry! I can't place an order for myself! Please give a new name"
-            return message
+         order_validation_result = order_validation(content, message, cat)
+         if order_validation_result:
+            return order_validation_result
 
          # Place the order
          order_placing_result = place_order(content, message, cat)
-
-         return order_placing_result
+         if order_placing_result:
+            return order_placing_result
 
 @hook()
 def before_cat_sends_message(message, cat):
@@ -116,6 +116,19 @@ def before_cat_sends_message(message, cat):
       # After order placement
       after_order_placement(cat)
 
+def order_validation(order, message, cat: CheshireCat):
+
+   # Cannot order pizza for myself!
+   if order["name"].lower() == "stregatto":
+      message["output"] = "I'm sorry! I can't place an order for myself! Please give a new name"
+      return message
+   
+   # For each pizza type in the order      
+   for pizza in order["order"]:
+      # Hawaian pizza is banned!
+      if pizza['type'].lower() == "hawaian":
+         message["output"] = "I'm sorry! Hawaian pizza is banned! Which pizza do you want instead of it?"
+         return message
 
 def place_order(order, message, cat: CheshireCat):
    """
@@ -164,8 +177,6 @@ def place_order(order, message, cat: CheshireCat):
    except Exception as e:
       print(e)
       message["output"] = "I'm sorry! There was a problem placing your order."
-
-      return message
 
    # Return the message
    return message
