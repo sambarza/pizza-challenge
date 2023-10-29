@@ -1,0 +1,16 @@
+{
+    "flow": "order_confirmed",
+    "name": "John",
+    "address": "cornizzolo 55 eupilio",
+    "order": [
+        {
+            "type": "margherita",
+            "quantity": 2,
+            "notes": "senza mozzarella"  sometimes the LLM add additional info in random other keys...
+        },
+        {
+            "type": "napoli",
+            "quantity": 1
+        }
+    ]
+}
