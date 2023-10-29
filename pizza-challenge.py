@@ -77,7 +77,7 @@ def agent_prompt_suffix(suffix, cat):
    return suffix
 
 @hook()
-def before_cat_sends_message(message, cat):
+def agent_after_execution_memory_chain(message, cat):
    """
    This function is called before the Cheshire Cat sends a message. It checks if the message content is a JSON object,
    and if so, checks if it indicates the end of a flow process. If the flow process is an order confirmation, the function
@@ -86,7 +86,7 @@ def before_cat_sends_message(message, cat):
       
    try:
       # Is it a JSON message?
-      content = json.loads(message["content"])
+      content = json.loads(message["output"])
    except:
       # Not a JSON message, return as is (I hope is not a malformed order confirmation!)
       return message
@@ -96,9 +96,26 @@ def before_cat_sends_message(message, cat):
 
       # Order confirmation?
       if content["flow"] == "order_confirmed":
+         
+         # Order validation       
+         if content["name"].lower() == "stregatto":
+            message["output"] = "I'm sorry! I can't place an order for myself! Please give a new name"
+            return message
 
-         # Yes! Place the order
-         return place_order(content, message, cat)
+         # Place the order
+         order_placing_result = place_order(content, message, cat)
+
+         return order_placing_result
+
+@hook()
+def before_cat_sends_message(message, cat):
+
+   # Order placed?
+   if message["content"] == "Thank you, order confirmed.":
+
+      # After order placement
+      after_order_placement(cat)
+
 
 def place_order(order, message, cat: CheshireCat):
    """
@@ -142,21 +159,31 @@ def place_order(order, message, cat: CheshireCat):
       print(f"§ ╚════════════════════════════════════════════════════════════════════════════════╝")
 
       # Send the order confirmation message
-      message["content"] = "Thank you, order confirmed."
+      message["output"] = "Thank you, order confirmed."
 
    except Exception as e:
       print(e)
-      message["content"] = "I'm sorry! There was a problem placing your order."
+      message["output"] = "I'm sorry! There was a problem placing your order."
 
-   # Clear the working memory and history
-   new_order(cat)
+      return message
 
    # Return the message
    return message
 
+def after_order_placement(cat: CheshireCat):
+
+   try:
+
+      # Clear the working memory and history
+      new_order(cat)
+
+   except Exception as e:
+      print("Exception after order placing, order probably already placed")
+      print(e)
+
 def new_order(cat: CheshireCat):
    """
-   Each order flow is compltely independent from the previous one.
+   Each order flow is completely independent from the previous one.
    This function clears the working memory and the history of the Cheshire Cat.
    """
    cat.working_memory.episodic_memory.clear()
